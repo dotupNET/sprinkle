@@ -1,4 +1,4 @@
-# sprinkle
+# ViewModelBinder
 
 > A convenient **Flutter architecture** for happy programmers
 
@@ -8,9 +8,9 @@
 
 ### State Management
 
-Sprinkle is based on streams. Streams are one of the core mechanics in Dart and in Flutter. Whether you are interacting with your database (e.g. Firebase) or trying to control the order and timing of requests sent to an API, streams are the most natural solution for these scenarios - we could say that streams are **idiomatic** in Flutter.
+ViewModelBinder is based on streams. Streams are one of the core mechanics in Dart and in Flutter. Whether you are interacting with your database (e.g. Firebase) or trying to control the order and timing of requests sent to an API, streams are the most natural solution for these scenarios - we could say that streams are **idiomatic** in Flutter.
 
-Why don't we use streams everywhere for simplicity and coherence then?! Streams are considered _difficult_, but that reputation is slightly exaggerated. Once you understand the benefits, there is no coming back to traditional state management approaches. And Sprinkle simplifies stream complexities - it's an easy to understand and coherent solution for state management in Flutter.
+Why don't we use streams everywhere for simplicity and coherence then?! Streams are considered _difficult_, but that reputation is slightly exaggerated. Once you understand the benefits, there is no coming back to traditional state management approaches. And ViewModelBinder simplifies stream complexities - it's an easy to understand and coherent solution for state management in Flutter.
 
 #### Reactive
 
@@ -79,13 +79,13 @@ final value = <String>[].reactive
 
 #### Automatic Provider Setup
 
-Use the `Sprinkle` widget to split the responsibilities and reduce the boilerplate so that you can write this:
+Use the `ViewModelBinder` widget to split the responsibilities and reduce the boilerplate so that you can write this:
 
 ```dart
 final supervisor = Supervisor()
   .register<AManager>(() => AManager())
 
-void main() => runApp(Sprinkle(supervisor: supervisor, child: App()));
+void main() => runApp(ViewModelBinder(supervisor: supervisor, child: App()));
 
 class App extends StatelessWidget {
   @override
@@ -136,7 +136,7 @@ class LoginManager extends Manager {
 
 ### Convenience Methods
 
-Some convenience methods that follow the Pareto principle, i.e. Sprinkle makes aliases for the most common code scenarios.
+Some convenience methods that follow the Pareto principle, i.e. ViewModelBinder makes aliases for the most common code scenarios.
 
 #### Navigation
 

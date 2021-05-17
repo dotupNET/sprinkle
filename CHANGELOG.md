@@ -11,7 +11,7 @@
 * Rename `onSuccess:` -> `builder:` in `Observer`
 * Add reactivity to `bool`
 * Add reactivity to `List`
-* Add `Sprinkle` top-level Widget
+* Add `ViewModelBinder` top-level Widget
 
 ## [0.0.3] - 2020-07-27
 
@@ -32,5 +32,5 @@
 * Add `Observer` wrapper
 * Add `Provider` class
 * Add `Overseer`
-* Add a shortcut for accessing the `Provider` data with extension methods with `SprinkleExtension`
+* Add a shortcut for accessing the `Provider` data with extension methods with `ViewModelBinderExtension`
 * Add `Manager` interface as an abstract class

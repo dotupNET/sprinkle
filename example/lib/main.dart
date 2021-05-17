@@ -1,95 +1,113 @@
+import 'package:example/ComplexState.dart';
+import 'package:example/CounterState.dart';
+import 'package:example/theme/AppTheme.dart';
 import 'package:flutter/material.dart';
+import 'package:view_model_binder/view_model_binder.dart';
 
-import 'package:sprinkle/sprinkle.dart';
+import 'AppState.dart';
 
 void main() {
-  // Use the Sprinkle widget to split
-  // the responsibilities and reduce the boilerplate
-  final supervisor = Supervisor();
-  supervisor.register<CounterManager>(() => CounterManager());
+  final registry = StreamStateRegistry();
+  registry.register<CounterState>(() => CounterState());
+  registry.register<AppState>(() => AppState());
 
   runApp(
-    Sprinkle(
-      supervisor: supervisor,
+    StreamStateApp(
+      streamStateRegistry: registry,
       child: App(),
     ),
   );
 }
 
-class CounterManager extends Manager {
-  // 1. we create a data store (it's just a stream underneath)
-  // Managers are immutable, thus stores must be `final`
-  final counter = 0.reactive;
-
-  // 2. we define some actions
-  void increment() => counter.value++;
-  void decrement() => counter.value--;
-  void add(int number) => counter.value += number;
-
-  @override
-  void dispose() {
-    // Close the stream to release resources
-    counter.close();
-  }
-}
-
 class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Sprinkle Exemple',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
-      home: HomePage(),
+    final appState = context.use<AppState>();
+    return StreamStateBuilder<ComplexState>(
+      stream: appState.complexState,
+      builder: (context, state) {
+            print("App build");
+        return MaterialApp(
+          title: 'ViewModelBinder Exemple',
+          theme: AppTheme.getTheme(state.isDarkTheme),
+          // theme: ThemeData(
+          //   primarySwatch: Colors.blue,
+          //   visualDensity: VisualDensity.adaptivePlatformDensity,
+          // ),
+          home: HomePage(),
+        );
+      },
     );
   }
 }
 
 class HomePage extends StatelessWidget {
-  // Our widgets are *always* stateless
   @override
   Widget build(BuildContext context) {
-    // 3. we include a manager with `use`
-    var counterManager = context.use<CounterManager>();
+    final appState = context.use<AppState>();
+    final counterState = context.use<CounterState>();
+
+    counterState.counter.value =
+        appState.complexState.value.counterInitialValue;
+
+    final _textController = TextEditingController();
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Sprinkle Exemple'),
+        title: StreamStateBuilder<ComplexState>(
+          stream: appState.complexState,
+          builder: (context, state) {
+            print("AppBar build");
+            return Text(state.title);
+          },
+        ),
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
+          Flexible(
+            child: TextField(
+              controller: _textController,
+              onChanged: (value) {},
+              onSubmitted: (value) => appState.setTitle(value),
+              decoration: InputDecoration.collapsed(
+                hintText: "Zieh dich aus",
+              ),
+            ),
+          ),
           Text(
             'You have pushed the button this many times:',
           ),
           // 4. we observe a part of widget tree
-          Observer<int>(
+          StreamStateBuilder<int>(
             // 5. we listen to a specific stream from the manager
-            stream: counterManager.counter,
+            stream: counterState.counter,
             // 6. we rebuild once the stream changes
-            builder: (_, data) {
+            builder: (_, state) {
+              print("Counter text build");
               return Text(
-                '$data',
+                '$state',
                 style: Theme.of(context).textTheme.headline4,
               );
             },
           ),
         ],
-        // Sprinkle has some cool extension like center()
+        // ViewModelBinder has some cool extension like center()
       ).center(),
       floatingActionButton: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           FloatingActionButton(
-            onPressed: counterManager.increment,
+            onPressed: counterState.increment,
             tooltip: 'Increment',
             child: Icon(Icons.add),
           ),
           SizedBox(height: 8),
           FloatingActionButton(
-            onPressed: counterManager.decrement,
+            onPressed: () {
+              appState.toggleTheme();
+              counterState.decrement;
+            },
             tooltip: 'Decrement',
             child: Icon(Icons.remove),
           ),

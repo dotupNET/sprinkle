@@ -1,19 +1,23 @@
 name: example
-description: Counter example using the Sprinkle package and the Sprinkle architecture
+description: Counter example using the ViewModelBinder package and the ViewModelBinder architecture
 version: 1.0.0
-homepage: https://github.com/zaiste/sprinkle
+homepage: https://github.com/zaiste/ViewModelBinder
 
+publish_to: none
 
 environment:
-  sdk: ">=2.6.0 <3.0.0"
+  sdk: ">=2.12.0 <3.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
-  sprinkle:
+
+  view_model_binder:
     path: ../
 
-  cupertino_icons: ^0.1.3
+  rxdart: ^0.27.0
+
+  cupertino_icons: ^1.0.3
 
 dev_dependencies:
   flutter_test:
